@@ -1,0 +1,41 @@
+{
+  "name": "esri-symbol-renderer",
+  "version": "1.0.0",
+  "description": "Render Esri REST API symbol and renderer objects to canvas for use in legends",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcclintock-lab/esri-symbol-renderer.git"
+  },
+  "keywords": [
+    "esri",
+    "canvas"
+  ],
+  "author": "Chad Burt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcclintock-lab/esri-symbol-renderer/issues"
+  },
+  "homepage": "https://github.com/mcclintock-lab/esri-symbol-renderer#readme",
+  "devDependencies": {
+    "babel-jest": "^20.0.3",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-es2017": "^6.24.1",
+    "canvas-prebuilt": "^1.6.5-prerelease.1",
+    "image-data-uri": "^1.0.0",
+    "jest": "^20.0.4",
+    "jest-image-snapshot": "^0.1.0",
+    "regenerator-runtime": "^0.10.5",
+    "webpack": "^3.5.4",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "dependencies": {
+  }
+}

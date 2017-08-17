@@ -1,0 +1,4 @@
+# ignore es6 sources
+src/
+# docs/ is pretty massive
+docs/
