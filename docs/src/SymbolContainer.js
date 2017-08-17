@@ -79,7 +79,7 @@ class SymbolContainer extends Component {
           <Tab label="Service Tester">
             <CardText>
               <TextField
-                defaultValue="http://data1-bluehalo.seasketch.org/arcgis/rest/services/Montserrat/All_Data_Montserrat/MapServer"
+                defaultValue="https://server.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer"
                 floatingLabelText="ESRI REST Service URL"
                 style={{width: "100%"}}
                  ref="url"
