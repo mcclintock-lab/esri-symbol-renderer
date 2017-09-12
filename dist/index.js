@@ -75,20 +75,23 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-var createCanvas = (w, h, nodeCanvas) => {
+"use strict";
+
+
+var createCanvas = function createCanvas(w, h, nodeCanvas) {
   if (nodeCanvas) {
     return new nodeCanvas(w, h);
   } else {
-    let canvas = document.createElement("canvas");
+    var canvas = document.createElement("canvas");
     canvas.setAttribute("width", w);
     canvas.setAttribute("height", h);
     return canvas;
   }
 };
 
-var createImage = (nodeCanvas, w, h) => {
+var createImage = function createImage(nodeCanvas, w, h) {
   if (nodeCanvas) {
     return new nodeCanvas.Image(w, h);
   } else {
@@ -98,8 +101,12 @@ var createImage = (nodeCanvas, w, h) => {
 
 module.exports = {
   createCanvas: createCanvas,
-  rgba: color => `rgba(${color[0]},${color[1]},${color[2]},${color[3]})`,
-  ptToPx: pt => Math.round(pt * 1.33),
+  rgba: function rgba(color) {
+    return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
+  },
+  ptToPx: function ptToPx(pt) {
+    return Math.round(pt * 1.33);
+  },
   createImage: createImage
 };
 
@@ -107,12 +114,20 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { createCanvas, rgba, ptToPx, createImage } = __webpack_require__(0);
-const fillPatterns = __webpack_require__(5);
-const linePatterns = __webpack_require__(2);
+"use strict";
 
-module.exports = (symbol, options, callback) => {
-  let canvas = createCanvas(options.width, options.height, options.canvas);
+
+var _require = __webpack_require__(0),
+    createCanvas = _require.createCanvas,
+    rgba = _require.rgba,
+    ptToPx = _require.ptToPx,
+    createImage = _require.createImage;
+
+var fillPatterns = __webpack_require__(5);
+var linePatterns = __webpack_require__(2);
+
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext("2d");
   var image = null;
   if (symbol.style === "esriSFSSolid") {
@@ -124,7 +139,7 @@ module.exports = (symbol, options, callback) => {
   } else if (symbol.type === 'esriPFS') {
     image = createImage(options.canvas, symbol.width, symbol.height);
   } else {
-    callback(new Error(`Unknown symbol style ${symbol.style}`), []);
+    callback(new Error("Unknown symbol style " + symbol.style), []);
     return;
   }
   if (!!symbol.outline && symbol.outline.style !== "esriSLSNull") {
@@ -134,7 +149,7 @@ module.exports = (symbol, options, callback) => {
     if (symbol.outline.style in linePatterns) {
       ctx.setLineDash(linePatterns[symbol.outline.style](strokeWidth));
     } else {
-      callback(new Error(`Unknown outline style ${symbol.outline.style}`), []);
+      callback(new Error("Unknown outline style " + symbol.outline.style), []);
       return;
     }
   } else {
@@ -142,7 +157,7 @@ module.exports = (symbol, options, callback) => {
     ctx.lineWidth = ptToPx(1);
     ctx.strokeStyle = rgba([0, 0, 0, 0]);
   }
-  let drawPoly = () => {
+  var drawPoly = function drawPoly() {
     ctx.beginPath();
     ctx.moveTo(0 + strokeWidth, 0 + strokeWidth);
     ctx.lineTo(0 + strokeWidth, options.height - strokeWidth);
@@ -156,12 +171,14 @@ module.exports = (symbol, options, callback) => {
     }
   };
   if (image) {
-    image.onload = () => {
+    image.onload = function () {
       ctx.fillStyle = ctx.createPattern(image, 'repeat');
       drawPoly();
     };
-    let { contentType, imageData } = symbol;
-    image.src = `data:${contentType};base64,${imageData}`;
+    var contentType = symbol.contentType,
+        imageData = symbol.imageData;
+
+    image.src = "data:" + contentType + ";base64," + imageData;
   } else {
     drawPoly();
   }
@@ -169,32 +186,49 @@ module.exports = (symbol, options, callback) => {
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 module.exports = {
-  esriSLSSolid: () => [],
-  esriSLSDash: strokeWidth => [strokeWidth * 2, strokeWidth * 2],
-  esriSLSDashDot: strokeWidth => [strokeWidth * 4, strokeWidth * 2, strokeWidth, strokeWidth * 2],
-  esriSLSDashDotDot: strokeWidth => [strokeWidth * 4, strokeWidth * 2, strokeWidth, strokeWidth * 2, strokeWidth, strokeWidth * 2],
-  esriSLSNull: () => [0, 10]
+  esriSLSSolid: function esriSLSSolid() {
+    return [];
+  },
+  esriSLSDash: function esriSLSDash(strokeWidth) {
+    return [strokeWidth * 2, strokeWidth * 2];
+  },
+  esriSLSDashDot: function esriSLSDashDot(strokeWidth) {
+    return [strokeWidth * 4, strokeWidth * 2, strokeWidth, strokeWidth * 2];
+  },
+  esriSLSDashDotDot: function esriSLSDashDotDot(strokeWidth) {
+    return [strokeWidth * 4, strokeWidth * 2, strokeWidth, strokeWidth * 2, strokeWidth, strokeWidth * 2];
+  },
+  esriSLSNull: function esriSLSNull() {
+    return [0, 10];
+  }
 };
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-const { renderSymbol } = __webpack_require__(4);
+var _require = __webpack_require__(4),
+    renderSymbol = _require.renderSymbol;
 
-const DEFAULT_OPTIONS = {
+var DEFAULT_OPTIONS = {
   blackFillPatterns: true,
   includeDefaultValues: false,
   scale: 1,
   Canvas: null
 };
 
-module.exports = (renderer, options, callback) => {
+module.exports = function (renderer, options, callback) {
   if (typeof options === 'function') {
     callback = options;
     options = {};
@@ -217,9 +251,31 @@ module.exports = (renderer, options, callback) => {
           label: renderer.defaultLabel || "Other"
         });
       }
-      for (var info of renderer.uniqueValueInfos) {
-        appendSymbol(symbols, info.label, info.symbol, options, renderer.uniqueValueInfos.length, callback);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = renderer.uniqueValueInfos[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var info = _step.value;
+
+          appendSymbol(symbols, info.label, info.symbol, options, renderer.uniqueValueInfos.length, callback);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
+
       break;
     case "classBreaks":
       if (options.includeDefaultValues && renderer.defaultSymbol) {
@@ -228,18 +284,40 @@ module.exports = (renderer, options, callback) => {
           label: renderer.defaultLabel || "Other"
         });
       }
-      for (var info of renderer.classBreakInfos) {
-        appendSymbol(symbols, info.label, info.symbol, options, renderer.classBreakInfos.length, callback);
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = renderer.classBreakInfos[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var info = _step2.value;
+
+          appendSymbol(symbols, info.label, info.symbol, options, renderer.classBreakInfos.length, callback);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
       }
+
       break;
     default:
-      callback(new Error(`Unknown renderer type '${renderer.type}'`));
+      callback(new Error("Unknown renderer type '" + renderer.type + "'"));
   }
 };
 
 // Renderers are async (Image API) so a function is needed to do async map
-const appendSymbol = (symbols, label, symbol, options, length, callback) => {
-  renderSymbol(symbol, options, (err, item) => {
+var appendSymbol = function appendSymbol(symbols, label, symbol, options, length, callback) {
+  renderSymbol(symbol, options, function (err, item) {
     if (err) {
       callback(err, []);
     } else {
@@ -258,9 +336,12 @@ const appendSymbol = (symbols, label, symbol, options, length, callback) => {
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-let symbols = {
+var symbols = {
   esriSFS: __webpack_require__(1),
   esriSLS: __webpack_require__(6),
   esriSMS: __webpack_require__(7),
@@ -270,9 +351,9 @@ let symbols = {
 };
 
 module.exports = _extends({}, symbols, {
-  renderSymbol: (symbol, options, callback) => {
+  renderSymbol: function renderSymbol(symbol, options, callback) {
     if (!(symbol.type in symbols)) {
-      callback(new Error(`Unrecognized symbol type ${symbol.type}`), []);
+      callback(new Error('Unrecognized symbol type ' + symbol.type), []);
     } else {
       symbols[symbol.type](symbol, options, callback);
     }
@@ -283,10 +364,14 @@ module.exports = _extends({}, symbols, {
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { createCanvas } = __webpack_require__(0);
+"use strict";
+
+
+var _require = __webpack_require__(0),
+    createCanvas = _require.createCanvas;
 
 module.exports = {
-  esriSFSVertical: (ctx, strokeStyle) => {
+  esriSFSVertical: function esriSFSVertical(ctx, strokeStyle) {
     var canvas = createCanvas(16, 16);
     var ctx = canvas.getContext('2d');
 
@@ -298,7 +383,7 @@ module.exports = {
     ctx.stroke();
     return ctx.createPattern(canvas, 'repeat');
   },
-  esriSFSHorizontal: (ctx, strokeStyle) => {
+  esriSFSHorizontal: function esriSFSHorizontal(ctx, strokeStyle) {
     var canvas = createCanvas(16, 16);
     var ctx = canvas.getContext('2d');
 
@@ -310,7 +395,7 @@ module.exports = {
     ctx.stroke();
     return ctx.createPattern(canvas, 'repeat');
   },
-  esriSFSBackwardDiagonal: (ctx, strokeStyle) => {
+  esriSFSBackwardDiagonal: function esriSFSBackwardDiagonal(ctx, strokeStyle) {
     var canvas = createCanvas(16, 16);
     var ctx = canvas.getContext('2d');
 
@@ -326,7 +411,7 @@ module.exports = {
     ctx.stroke();
     return ctx.createPattern(canvas, 'repeat');
   },
-  esriSFSForwardDiagonal: (ctx, strokeStyle) => {
+  esriSFSForwardDiagonal: function esriSFSForwardDiagonal(ctx, strokeStyle) {
     var canvas = createCanvas(16, 16);
     var ctx = canvas.getContext('2d');
 
@@ -342,7 +427,7 @@ module.exports = {
     ctx.stroke();
     return ctx.createPattern(canvas, 'repeat');
   },
-  esriSFSCross: (ctx, strokeStyle) => {
+  esriSFSCross: function esriSFSCross(ctx, strokeStyle) {
     var canvas = createCanvas(16, 16);
     var ctx = canvas.getContext('2d');
 
@@ -358,7 +443,7 @@ module.exports = {
     ctx.stroke();
     return ctx.createPattern(canvas, 'repeat');
   },
-  esriSFSDiagonalCross: (ctx, strokeStyle) => {
+  esriSFSDiagonalCross: function esriSFSDiagonalCross(ctx, strokeStyle) {
     var canvas = createCanvas(16, 16);
     var ctx = canvas.getContext('2d');
 
@@ -388,11 +473,18 @@ module.exports = {
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { createCanvas, rgba, ptToPx } = __webpack_require__(0);
-const linePatterns = __webpack_require__(2);
+"use strict";
 
-module.exports = (symbol, options, callback) => {
-  let canvas = createCanvas(options.width, options.height, options.canvas);
+
+var _require = __webpack_require__(0),
+    createCanvas = _require.createCanvas,
+    rgba = _require.rgba,
+    ptToPx = _require.ptToPx;
+
+var linePatterns = __webpack_require__(2);
+
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext('2d');
   var strokeWidth = ptToPx(symbol.width || 1);
   ctx.lineWidth = strokeWidth;
@@ -400,13 +492,13 @@ module.exports = (symbol, options, callback) => {
   if (symbol.style in linePatterns) {
     ctx.setLineDash(linePatterns[symbol.style](strokeWidth));
     ctx.beginPath();
-    let midpoint = options.height * 0.5 + strokeWidth;
+    var midpoint = options.height * 0.5 + strokeWidth;
     ctx.moveTo(0, midpoint);
     ctx.lineTo(options.width, midpoint);
     ctx.stroke();
     callback(null, canvas);
   } else {
-    callback(new Error(`Unknown esriSLS style ${symbol.outline.style}`), []);
+    callback(new Error("Unknown esriSLS style " + symbol.outline.style), []);
   }
 };
 
@@ -414,10 +506,16 @@ module.exports = (symbol, options, callback) => {
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { createCanvas, rgba, ptToPx } = __webpack_require__(0);
+"use strict";
 
-module.exports = (symbol, options, callback) => {
-  let canvas = createCanvas(options.width, options.height, options.canvas);
+
+var _require = __webpack_require__(0),
+    createCanvas = _require.createCanvas,
+    rgba = _require.rgba,
+    ptToPx = _require.ptToPx;
+
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext("2d");
   ctx.lineWidth = ptToPx(!!symbol.outline ? symbol.outline.width : 1);
   ctx.strokeStyle = !!symbol.outline ? rgba(symbol.outline.color) : rgba(symbol.color);
@@ -492,7 +590,7 @@ module.exports = (symbol, options, callback) => {
       ctx.stroke();
       break;
     default:
-      callback(new Error(`Unknown symbol type ${symbol.style}`), []);
+      callback(new Error("Unknown symbol type " + symbol.style), []);
       return;
   }
   callback(null, canvas);
@@ -502,18 +600,26 @@ module.exports = (symbol, options, callback) => {
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { createCanvas, ptToPx, createImage } = __webpack_require__(0);
+"use strict";
 
-module.exports = (symbol, options, callback) => {
-  let canvas = createCanvas(options.width, options.height, options.canvas);
+
+var _require = __webpack_require__(0),
+    createCanvas = _require.createCanvas,
+    ptToPx = _require.ptToPx,
+    createImage = _require.createImage;
+
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext("2d");
-  let { contentType, imageData } = symbol;
+  var contentType = symbol.contentType,
+      imageData = symbol.imageData;
+
   var image = createImage(options.canvas, ptToPx(symbol.width) * options.scale, ptToPx(symbol.height) * options.scale);
   image.onload = function () {
     ctx.drawImage(image, (options.width - image.width) / 2, (options.height - image.height) / 2, Math.round(ptToPx(symbol.width) * options.scale), Math.round(ptToPx(symbol.height) * options.scale));
     callback(null, canvas);
   };
-  image.src = `data:${contentType};base64,${imageData}`;
+  image.src = "data:" + contentType + ";base64," + imageData;
 };
 
 /***/ })

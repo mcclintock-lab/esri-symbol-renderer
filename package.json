@@ -1,6 +1,6 @@
 {
   "name": "esri-symbol-renderer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Render Esri REST API symbol and renderer objects to canvas for use in legends",
   "main": "dist/index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/mcclintock-lab/esri-symbol-renderer#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-jest": "^20.0.3",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -36,6 +37,5 @@
     "webpack": "^3.5.4",
     "webpack-node-externals": "^1.6.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
