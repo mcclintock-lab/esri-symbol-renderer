@@ -1,7 +1,6 @@
 const { createCanvas, ptToPx, createImage } = require("../utils");
 
-module.exports = (symbol, options, callback) => {
-  let canvas = createCanvas(options.width, options.height, options.canvas);
+module.exports = (symbol, canvas, options, callback) => {
   var ctx = canvas.getContext("2d");
   let { contentType, imageData } = symbol;
   var image = createImage(options.canvas, ptToPx(symbol.width) * options.scale, ptToPx(symbol.height) * options.scale);

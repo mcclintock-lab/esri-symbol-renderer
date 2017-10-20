@@ -20,6 +20,7 @@
   "bugs": {
     "url": "https://github.com/mcclintock-lab/esri-symbol-renderer/issues"
   },
+  "module": true,
   "homepage": "https://github.com/mcclintock-lab/esri-symbol-renderer#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",

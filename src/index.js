@@ -1,4 +1,4 @@
-const { renderSymbol } = require("./symbols");
+const { renderSymbol, symbols, fillPatterns } = require("./symbols");
 
 const DEFAULT_OPTIONS = {
   blackFillPatterns: true,
@@ -94,3 +94,6 @@ const appendSymbol = (symbols, label, symbol, options, length, callback) => {
     }
   });
 };
+
+module.exports.symbols = symbols;
+module.exports.fillPatterns = fillPatterns;

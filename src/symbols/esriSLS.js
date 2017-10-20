@@ -1,10 +1,10 @@
 const { createCanvas, rgba, ptToPx } = require("../utils");
 const linePatterns = require("./linePatterns");
 
-module.exports = (symbol, options, callback) => {
-  let canvas = createCanvas(options.width, options.height, options.canvas);
+module.exports = (symbol, canvas, options, callback) => {
   var ctx = canvas.getContext('2d');
-  var strokeWidth = ptToPx(symbol.width || 1);
+  var strokeWidth = ptToPx(symbol.width || 1.33);
+  console.log('strokeWidth', strokeWidth);
   ctx.lineWidth = strokeWidth;
   ctx.strokeStyle = rgba(symbol.color);
   if (symbol.style in linePatterns) {

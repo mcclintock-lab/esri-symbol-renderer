@@ -2,8 +2,7 @@ const { createCanvas, rgba, ptToPx, createImage } = require("../utils");
 const fillPatterns = require("./fillPatterns");
 const linePatterns = require("./linePatterns");
 
-module.exports = (symbol, options, callback) => {
-  let canvas = createCanvas(options.width, options.height, options.canvas);
+module.exports = (symbol, canvas, options, callback) => {
   var ctx = canvas.getContext("2d");
   var image = null;
   if (symbol.style === "esriSFSSolid") {

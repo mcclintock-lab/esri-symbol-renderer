@@ -7,13 +7,18 @@ let symbols = {
   esriPFS: require('./esriSFS')
 }
 
+import fillPatterns from './fillPatterns';
+import {createCanvas} from '../utils';
+
 module.exports = {
-  ...symbols,
+  symbols,
+  fillPatterns,
   renderSymbol: (symbol, options, callback) => {
     if (!(symbol.type in symbols)) {
       callback(new Error(`Unrecognized symbol type ${symbol.type}`), []);
     } else {
-      symbols[symbol.type](symbol, options, callback)
+      let canvas = createCanvas(options.width, options.height, options.canvas);
+      symbols[symbol.type](symbol, canvas, options, callback)
     }
   }
 }

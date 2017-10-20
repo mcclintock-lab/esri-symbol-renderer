@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -105,7 +105,7 @@ module.exports = {
     return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
   },
   ptToPx: function ptToPx(pt) {
-    return Math.round(pt * 1.33);
+    return pt * 1.33;
   },
   createImage: createImage
 };
@@ -118,16 +118,124 @@ module.exports = {
 
 
 var _require = __webpack_require__(0),
+    createCanvas = _require.createCanvas;
+
+module.exports = {
+  esriSFSVertical: function esriSFSVertical(ctx, strokeStyle) {
+    var canvas = createCanvas(16, 16);
+    var ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = strokeStyle || "#000000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(8, 0);
+    ctx.lineTo(8, 16);
+    ctx.stroke();
+    return ctx.createPattern(canvas, 'repeat');
+  },
+  esriSFSHorizontal: function esriSFSHorizontal(ctx, strokeStyle) {
+    var canvas = createCanvas(16, 16);
+    var ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = strokeStyle || "#000000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.lineTo(16, 8);
+    ctx.stroke();
+    return ctx.createPattern(canvas, 'repeat');
+  },
+  esriSFSBackwardDiagonal: function esriSFSBackwardDiagonal(ctx, strokeStyle) {
+    var canvas = createCanvas(16, 16);
+    var ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = strokeStyle || "#000000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.lineTo(8, 0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, 24);
+    ctx.lineTo(24, 0);
+    ctx.stroke();
+    return ctx.createPattern(canvas, 'repeat');
+  },
+  esriSFSForwardDiagonal: function esriSFSForwardDiagonal(ctx, strokeStyle) {
+    var canvas = createCanvas(16, 16);
+    var ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = strokeStyle || "#000000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.lineTo(8, 16);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(8, 0);
+    ctx.lineTo(16, 8);
+    ctx.stroke();
+    return ctx.createPattern(canvas, 'repeat');
+  },
+  esriSFSCross: function esriSFSCross(ctx, strokeStyle) {
+    var canvas = createCanvas(16, 16);
+    var ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = strokeStyle || "#000000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.lineTo(16, 8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(8, 0);
+    ctx.lineTo(8, 16);
+    ctx.stroke();
+    return ctx.createPattern(canvas, 'repeat');
+  },
+  esriSFSDiagonalCross: function esriSFSDiagonalCross(ctx, strokeStyle) {
+    var canvas = createCanvas(16, 16);
+    var ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = strokeStyle || "#000000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.lineTo(8, 16);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(8, 0);
+    ctx.lineTo(16, 8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.lineTo(8, 0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, 24);
+    ctx.lineTo(24, 0);
+    ctx.stroke();
+    return ctx.createPattern(canvas, 'repeat');
+  }
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _require = __webpack_require__(0),
     createCanvas = _require.createCanvas,
     rgba = _require.rgba,
     ptToPx = _require.ptToPx,
     createImage = _require.createImage;
 
-var fillPatterns = __webpack_require__(5);
-var linePatterns = __webpack_require__(2);
+var fillPatterns = __webpack_require__(1);
+var linePatterns = __webpack_require__(3);
 
-module.exports = function (symbol, options, callback) {
-  var canvas = createCanvas(options.width, options.height, options.canvas);
+module.exports = function (symbol, canvas, options, callback) {
   var ctx = canvas.getContext("2d");
   var image = null;
   if (symbol.style === "esriSFSSolid") {
@@ -185,7 +293,7 @@ module.exports = function (symbol, options, callback) {
 };
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -210,7 +318,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -218,8 +326,10 @@ module.exports = {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _require = __webpack_require__(4),
-    renderSymbol = _require.renderSymbol;
+var _require = __webpack_require__(5),
+    renderSymbol = _require.renderSymbol,
+    symbols = _require.symbols,
+    fillPatterns = _require.fillPatterns;
 
 var DEFAULT_OPTIONS = {
   blackFillPatterns: true,
@@ -332,33 +442,8 @@ var appendSymbol = function appendSymbol(symbols, label, symbol, options, length
   });
 };
 
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var symbols = {
-  esriSFS: __webpack_require__(1),
-  esriSLS: __webpack_require__(6),
-  esriSMS: __webpack_require__(7),
-  esriPMS: __webpack_require__(8),
-  // lots in common with esriSFS code
-  esriPFS: __webpack_require__(1)
-};
-
-module.exports = _extends({}, symbols, {
-  renderSymbol: function renderSymbol(symbol, options, callback) {
-    if (!(symbol.type in symbols)) {
-      callback(new Error('Unrecognized symbol type ' + symbol.type), []);
-    } else {
-      symbols[symbol.type](symbol, options, callback);
-    }
-  }
-});
+module.exports.symbols = symbols;
+module.exports.fillPatterns = fillPatterns;
 
 /***/ }),
 /* 5 */
@@ -367,105 +452,33 @@ module.exports = _extends({}, symbols, {
 "use strict";
 
 
-var _require = __webpack_require__(0),
-    createCanvas = _require.createCanvas;
+var _fillPatterns = __webpack_require__(1);
+
+var _fillPatterns2 = _interopRequireDefault(_fillPatterns);
+
+var _utils = __webpack_require__(0);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var symbols = {
+  esriSFS: __webpack_require__(2),
+  esriSLS: __webpack_require__(6),
+  esriSMS: __webpack_require__(7),
+  esriPMS: __webpack_require__(8),
+  // lots in common with esriSFS code
+  esriPFS: __webpack_require__(2)
+};
 
 module.exports = {
-  esriSFSVertical: function esriSFSVertical(ctx, strokeStyle) {
-    var canvas = createCanvas(16, 16);
-    var ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = strokeStyle || "#000000";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(8, 0);
-    ctx.lineTo(8, 16);
-    ctx.stroke();
-    return ctx.createPattern(canvas, 'repeat');
-  },
-  esriSFSHorizontal: function esriSFSHorizontal(ctx, strokeStyle) {
-    var canvas = createCanvas(16, 16);
-    var ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = strokeStyle || "#000000";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, 8);
-    ctx.lineTo(16, 8);
-    ctx.stroke();
-    return ctx.createPattern(canvas, 'repeat');
-  },
-  esriSFSBackwardDiagonal: function esriSFSBackwardDiagonal(ctx, strokeStyle) {
-    var canvas = createCanvas(16, 16);
-    var ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = strokeStyle || "#000000";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, 8);
-    ctx.lineTo(8, 0);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(0, 24);
-    ctx.lineTo(24, 0);
-    ctx.stroke();
-    return ctx.createPattern(canvas, 'repeat');
-  },
-  esriSFSForwardDiagonal: function esriSFSForwardDiagonal(ctx, strokeStyle) {
-    var canvas = createCanvas(16, 16);
-    var ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = strokeStyle || "#000000";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, 8);
-    ctx.lineTo(8, 16);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(8, 0);
-    ctx.lineTo(16, 8);
-    ctx.stroke();
-    return ctx.createPattern(canvas, 'repeat');
-  },
-  esriSFSCross: function esriSFSCross(ctx, strokeStyle) {
-    var canvas = createCanvas(16, 16);
-    var ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = strokeStyle || "#000000";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, 8);
-    ctx.lineTo(16, 8);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(8, 0);
-    ctx.lineTo(8, 16);
-    ctx.stroke();
-    return ctx.createPattern(canvas, 'repeat');
-  },
-  esriSFSDiagonalCross: function esriSFSDiagonalCross(ctx, strokeStyle) {
-    var canvas = createCanvas(16, 16);
-    var ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = strokeStyle || "#000000";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, 8);
-    ctx.lineTo(8, 16);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(8, 0);
-    ctx.lineTo(16, 8);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(0, 8);
-    ctx.lineTo(8, 0);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(0, 24);
-    ctx.lineTo(24, 0);
-    ctx.stroke();
-    return ctx.createPattern(canvas, 'repeat');
+  symbols: symbols,
+  fillPatterns: _fillPatterns2.default,
+  renderSymbol: function renderSymbol(symbol, options, callback) {
+    if (!(symbol.type in symbols)) {
+      callback(new Error('Unrecognized symbol type ' + symbol.type), []);
+    } else {
+      var canvas = (0, _utils.createCanvas)(options.width, options.height, options.canvas);
+      symbols[symbol.type](symbol, canvas, options, callback);
+    }
   }
 };
 
@@ -481,12 +494,12 @@ var _require = __webpack_require__(0),
     rgba = _require.rgba,
     ptToPx = _require.ptToPx;
 
-var linePatterns = __webpack_require__(2);
+var linePatterns = __webpack_require__(3);
 
-module.exports = function (symbol, options, callback) {
-  var canvas = createCanvas(options.width, options.height, options.canvas);
+module.exports = function (symbol, canvas, options, callback) {
   var ctx = canvas.getContext('2d');
-  var strokeWidth = ptToPx(symbol.width || 1);
+  var strokeWidth = ptToPx(symbol.width || 1.33);
+  console.log('strokeWidth', strokeWidth);
   ctx.lineWidth = strokeWidth;
   ctx.strokeStyle = rgba(symbol.color);
   if (symbol.style in linePatterns) {
@@ -514,18 +527,22 @@ var _require = __webpack_require__(0),
     rgba = _require.rgba,
     ptToPx = _require.ptToPx;
 
-module.exports = function (symbol, options, callback) {
-  var canvas = createCanvas(options.width, options.height, options.canvas);
+module.exports = function (symbol, canvas, options, callback) {
   var ctx = canvas.getContext("2d");
-  ctx.lineWidth = ptToPx(!!symbol.outline ? symbol.outline.width : 1);
+  ctx.lineWidth = Math.round(ptToPx(!!symbol.outline ? symbol.outline.width : 1));
   ctx.strokeStyle = !!symbol.outline ? rgba(symbol.outline.color) : rgba(symbol.color);
   ctx.fillStyle = rgba(symbol.color);
   switch (symbol.style) {
     case "esriSMSCircle":
+      ctx.imageSmoothingEnabled = false;
       ctx.beginPath();
       var x = options.width / 2;
       var y = options.height / 2;
-      var radius = ptToPx(symbol.size) * options.scale;
+      var diameter = ptToPx(symbol.size) * options.scale;
+      console.log('diameter', diameter);
+      var radius = diameter / 2 + 0.25;
+      console.log('radius', radius);
+      console.log('lineWidth', ctx.lineWidth);
       ctx.arc(x, y, radius, 0, Math.PI * 2, true);
       ctx.fill();
       ctx.stroke();
@@ -608,8 +625,7 @@ var _require = __webpack_require__(0),
     ptToPx = _require.ptToPx,
     createImage = _require.createImage;
 
-module.exports = function (symbol, options, callback) {
-  var canvas = createCanvas(options.width, options.height, options.canvas);
+module.exports = function (symbol, canvas, options, callback) {
   var ctx = canvas.getContext("2d");
   var contentType = symbol.contentType,
       imageData = symbol.imageData;
