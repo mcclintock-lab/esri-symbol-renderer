@@ -1,26 +1,28 @@
 const { createCanvas, rgba, ptToPx } = require("../utils");
 
-module.exports = (symbol, canvas, options, callback) => {
+module.exports = (symbol, options, callback) => {
+  let canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext("2d");
-  ctx.lineWidth = Math.round(
-    ptToPx(!!symbol.outline ? symbol.outline.width : 1)
-  );
+  ctx.lineWidth = ptToPx(!!symbol.outline ? symbol.outline.width : 1);
   ctx.strokeStyle = !!symbol.outline
     ? rgba(symbol.outline.color)
     : rgba(symbol.color);
   ctx.fillStyle = rgba(symbol.color);
   switch (symbol.style) {
     case "esriSMSCircle":
-      ctx.imageSmoothingEnabled = false;
+      // canvas.style = "image-rendering: pixelated;";
+      // ctx.imageSmoothingEnabled = false;
       ctx.beginPath();
       var x = options.width / 2;
       var y = options.height / 2;
       var diameter = ptToPx(symbol.size) * options.scale;
       // I have no idea why, but adding a bit here helps match arcgis server output a bit better
-      var radius = diameter / 2 + 0.25;
+      var radius = Math.round((diameter + ctx.lineWidth )/ 2);
+      console.log('radius', radius, ctx.lineWidth);
       ctx.arc(x, y, radius, 0, Math.PI * 2, true);
       ctx.fill();
       ctx.stroke();
+      console.log(canvas.toDataURL())
       break;
     case "esriSMSCross":
       var w = ptToPx(symbol.size) * options.scale;

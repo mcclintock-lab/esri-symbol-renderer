@@ -20,7 +20,9 @@ module.exports = (renderer, options, callback) => {
     ...DEFAULT_OPTIONS,
     ...options
   };
-  options.width = options.height = Math.round(30 * options.scale);
+  if (!options.width || !options.height) {
+    options.width = options.height = Math.round(30 * options.scale);
+  }
   var symbols = [];
   switch (renderer.type) {
     case "simple":

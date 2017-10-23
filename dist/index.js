@@ -105,7 +105,7 @@ module.exports = {
     return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
   },
   ptToPx: function ptToPx(pt) {
-    return pt * 1.33;
+    return Math.round(pt * 1.33);
   },
   createImage: createImage
 };
@@ -235,7 +235,8 @@ var _require = __webpack_require__(0),
 var fillPatterns = __webpack_require__(1);
 var linePatterns = __webpack_require__(3);
 
-module.exports = function (symbol, canvas, options, callback) {
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext("2d");
   var image = null;
   if (symbol.style === "esriSFSSolid") {
@@ -348,7 +349,9 @@ module.exports = function (renderer, options, callback) {
     throw new Error("You must supply a callback");
   }
   options = _extends({}, DEFAULT_OPTIONS, options);
-  options.width = options.height = Math.round(30 * options.scale);
+  if (!options.width || !options.height) {
+    options.width = options.height = Math.round(30 * options.scale);
+  }
   var symbols = [];
   switch (renderer.type) {
     case "simple":
@@ -456,8 +459,6 @@ var _fillPatterns = __webpack_require__(1);
 
 var _fillPatterns2 = _interopRequireDefault(_fillPatterns);
 
-var _utils = __webpack_require__(0);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var symbols = {
@@ -476,8 +477,7 @@ module.exports = {
     if (!(symbol.type in symbols)) {
       callback(new Error('Unrecognized symbol type ' + symbol.type), []);
     } else {
-      var canvas = (0, _utils.createCanvas)(options.width, options.height, options.canvas);
-      symbols[symbol.type](symbol, canvas, options, callback);
+      symbols[symbol.type](symbol, options, callback);
     }
   }
 };
@@ -496,7 +496,8 @@ var _require = __webpack_require__(0),
 
 var linePatterns = __webpack_require__(3);
 
-module.exports = function (symbol, canvas, options, callback) {
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext('2d');
   var strokeWidth = ptToPx(symbol.width || 1.33);
   console.log('strokeWidth', strokeWidth);
@@ -527,25 +528,27 @@ var _require = __webpack_require__(0),
     rgba = _require.rgba,
     ptToPx = _require.ptToPx;
 
-module.exports = function (symbol, canvas, options, callback) {
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext("2d");
-  ctx.lineWidth = Math.round(ptToPx(!!symbol.outline ? symbol.outline.width : 1));
+  ctx.lineWidth = ptToPx(!!symbol.outline ? symbol.outline.width : 1);
   ctx.strokeStyle = !!symbol.outline ? rgba(symbol.outline.color) : rgba(symbol.color);
   ctx.fillStyle = rgba(symbol.color);
   switch (symbol.style) {
     case "esriSMSCircle":
-      ctx.imageSmoothingEnabled = false;
+      // canvas.style = "image-rendering: pixelated;";
+      // ctx.imageSmoothingEnabled = false;
       ctx.beginPath();
       var x = options.width / 2;
       var y = options.height / 2;
       var diameter = ptToPx(symbol.size) * options.scale;
-      console.log('diameter', diameter);
-      var radius = diameter / 2 + 0.25;
-      console.log('radius', radius);
-      console.log('lineWidth', ctx.lineWidth);
+      // I have no idea why, but adding a bit here helps match arcgis server output a bit better
+      var radius = Math.round((diameter + ctx.lineWidth) / 2);
+      console.log('radius', radius, ctx.lineWidth);
       ctx.arc(x, y, radius, 0, Math.PI * 2, true);
       ctx.fill();
       ctx.stroke();
+      console.log(canvas.toDataURL());
       break;
     case "esriSMSCross":
       var w = ptToPx(symbol.size) * options.scale;
@@ -625,7 +628,8 @@ var _require = __webpack_require__(0),
     ptToPx = _require.ptToPx,
     createImage = _require.createImage;
 
-module.exports = function (symbol, canvas, options, callback) {
+module.exports = function (symbol, options, callback) {
+  var canvas = createCanvas(options.width, options.height, options.canvas);
   var ctx = canvas.getContext("2d");
   var contentType = symbol.contentType,
       imageData = symbol.imageData;

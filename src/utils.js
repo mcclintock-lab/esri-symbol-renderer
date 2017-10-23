@@ -20,6 +20,6 @@ var createImage = (nodeCanvas, w, h) => {
 module.exports = {
   createCanvas: createCanvas,
   rgba: (color) => `rgba(${color[0]},${color[1]},${color[2]},${color[3]})`,
-  ptToPx: (pt) => (pt * 1.33),
+  ptToPx: (pt) => Math.round(pt * 1.33),
   createImage: createImage
 }

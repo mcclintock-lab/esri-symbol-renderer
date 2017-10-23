@@ -8,7 +8,6 @@ let symbols = {
 }
 
 import fillPatterns from './fillPatterns';
-import {createCanvas} from '../utils';
 
 module.exports = {
   symbols,
@@ -17,8 +16,7 @@ module.exports = {
     if (!(symbol.type in symbols)) {
       callback(new Error(`Unrecognized symbol type ${symbol.type}`), []);
     } else {
-      let canvas = createCanvas(options.width, options.height, options.canvas);
-      symbols[symbol.type](symbol, canvas, options, callback)
+      symbols[symbol.type](symbol, options, callback)
     }
   }
 }
